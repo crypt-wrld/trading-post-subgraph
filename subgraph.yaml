@@ -1,0 +1,32 @@
+specVersion: 0.0.1
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: TradingPost
+    network: bsc
+    source:
+      address: "0xa246C13426DACE3e9bDD7Ff1b71f6F08dC27f415"
+      abi: TradingPost
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - OnSaleOffer
+        - OnSaleOfferComplete
+        - OnSaleOfferDelete
+        - OwnershipTransferred
+      abis:
+        - name: TradingPost
+          file: ./abis/TradingPost.json
+      eventHandlers:
+        - event: OnSaleOffer(uint256,address,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleOnSaleOffer
+        - event: OnSaleOfferComplete(address,uint256)
+          handler: handleOnSaleOfferComplete
+        - event: OnSaleOfferDelete(uint256)
+          handler: handleOnSaleOfferDelete
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+      file: ./src/mapping.ts
