@@ -1,6 +1,6 @@
 specVersion: 0.0.2
 schema:
-  file: ./schema.graphql
+  file: schema.graphql
 dataSources:
   - kind: ethereum
     name: TradingPost
@@ -20,7 +20,7 @@ dataSources:
         - OwnershipTransferred
       abis:
         - name: TradingPost
-          file: ./abis/TradingPost.json
+          file: TradingPost\abis\TradingPost.json
       eventHandlers:
         - event: OnSaleOffer(uint256,address,uint256,uint256,uint256,uint256,uint256,uint256)
           handler: handleOnSaleOffer
@@ -28,4 +28,4 @@ dataSources:
           handler: handleOnSaleOfferComplete
         - event: OnSaleOfferRevoked(uint256)
           handler: handleOnSaleOfferRevoked
-      file: ./src/mapping.ts
+      file: TradingPost\TradingPost.wasm

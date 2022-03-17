@@ -1,57 +1,39 @@
-import { BigInt } from "@graphprotocol/graph-ts"
 import {
-  TradingPost,
   OnSaleOffer,
   OnSaleOfferComplete,
-  OnSaleOfferDelete,
-  OwnershipTransferred
+  OnSaleOfferRevoked,
 } from "../generated/TradingPost/TradingPost"
-import { ExampleEntity } from "../generated/schema"
+import { SaleOffer } from "../generated/schema"
 
 export function handleOnSaleOffer(event: OnSaleOffer): void {
   // Entities can be loaded from the store using a string ID; this ID
   // needs to be unique across all entities of the same type
-  let entity = ExampleEntity.load(event.transaction.from.toHex())
-
-  // Entities only exist after they have been saved to the store;
-  // `null` checks allow to create entities on demand
-  if (!entity) {
-    entity = new ExampleEntity(event.transaction.from.toHex())
-
-    // Entity fields can be set using simple assignments
-    entity.count = BigInt.fromI32(0)
-  }
-
-  // BigInt and BigDecimal math are supported
-  entity.count = entity.count + BigInt.fromI32(1)
-
-  // Entity fields can be set based on event parameters
-  entity.offerId = event.params.offerId
-  entity.seller = event.params.seller
-
-  // Entities can be written to the store with `.save()`
-  entity.save()
-
-  // Note: If a handler doesn't require existing field values, it is faster
-  // _not_ to load the entity from the store. Instead, create it fresh with
-  // `new Entity(...)`, set the fields that should be updated and save the
-  // entity back to the store. Fields that were not set or unset remain
-  // unchanged, allowing for partial updates to be applied.
-
-  // It is also possible to access smart contracts from mappings. For
-  // example, the contract that has emitted the event can be connected to
-  // with:
-  //
-  // let contract = Contract.bind(event.address)
-  //
-  // The following functions can then be called on this contract to access
-  // state variables and other data:
-  //
-  // - contract.owner(...)
+  let saleOffer = new SaleOffer(event.params.offerId.toString());
+  saleOffer.amount = event.params.amount;
+  saleOffer.expiry = event.params.expiry;
+  saleOffer.feeFlat = event.params.feeFlat;
+  saleOffer.feePercent = event.params.feePercent;
+  saleOffer.price = event.params.price;
+  saleOffer.seller = event.params.seller;
+  saleOffer.tokenId = event.params.tokenId;
+  saleOffer.creationBlock = event.block.number;
+  saleOffer.creationTimestamp = event.block.timestamp;
+  saleOffer.collected = false;
+  saleOffer.save();
 }
 
-export function handleOnSaleOfferComplete(event: OnSaleOfferComplete): void {}
+export function handleOnSaleOfferComplete(event: OnSaleOfferComplete): void {
+  let saleOffer = SaleOffer.load(event.params.offerId.toString()) as SaleOffer;
+  saleOffer.buyer = event.params.buyer;
+  saleOffer.soldBlock = event.block.number;
+  saleOffer.soldTimestamp = event.block.timestamp;
+  saleOffer.collected = true;
+  saleOffer.save();
+}
 
-export function handleOnSaleOfferDelete(event: OnSaleOfferDelete): void {}
+export function handleOnSaleOfferRevoked(event: OnSaleOfferRevoked): void {
+  let saleOffer = SaleOffer.load(event.params.offerId.toString()) as SaleOffer;
+  saleOffer.collected = true;
+  saleOffer.save();
+}
 
-export function handleOwnershipTransferred(event: OwnershipTransferred): void {}
