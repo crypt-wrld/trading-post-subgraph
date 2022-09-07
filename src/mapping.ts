@@ -14,6 +14,7 @@ export function handleOnSaleOffer(event: OnSaleOffer): void {
   saleOffer.feeFlat = event.params.feeFlat;
   saleOffer.feePercent = event.params.feePercent;
   saleOffer.price = event.params.price;
+  saleOffer.unitPrice = event.params.price / event.params.amount;
   saleOffer.seller = event.params.seller;
   saleOffer.tokenId = event.params.tokenId;
   saleOffer.creationBlock = event.block.number;

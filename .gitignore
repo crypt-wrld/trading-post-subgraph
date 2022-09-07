@@ -1,4 +1,5 @@
 lib-cov
+generated
 *.seed
 *.log
 *.csv

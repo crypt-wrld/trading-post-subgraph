@@ -3,6 +3,7 @@ type SaleOffer @entity {
   tokenId: BigInt!
   amount: BigInt!
   price: BigInt!
+  unitPrice: BigInt!
   expiry: BigInt!
   feePercent: BigInt!
   feeFlat: BigInt!
